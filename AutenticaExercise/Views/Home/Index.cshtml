@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Autentica Exercise";
+}
+
+<div class="text-left">
+    <h4 class="display-12">Attelotas četras Latvijas apdzīvotās vietas, kur katra no tām visvairāk attālināta uz katru debespusi (Z, A, D, R).<br/>
+        Realizēta arī Latvijas apdzīvoto vietu meklēšanas iespēja.</h4>
+    
+    <input placeholder="Saciet ievadiet nosaukumu" type = "text" id="searchText" class="form-control"/>
+    <button class="form-control btn-success" id="searchButton" onclick="selectLocation()">Meklēt</button>
+    
+    <div id="map"></div>
+</div>
+
+<script> 
+    document.addEventListener("DOMContentLoaded", function() {
+        showPoints('@Html.Raw(ViewBag.BorderLocations)')
+        
+        $("#searchText").autocomplete({  
+                source: function(request,response) {  
+                    $.ajax({  
+                        url: '@Url.Action("GetLocations","Home")',  
+                        type: "GET",  
+                        dataType: "json",  
+                        data: { subString : request.term },  
+                        success: function (data) {  
+                            response($.map(data.data, function (item) {  
+                                return { value: '{ "name": "' + item.name + '", "dd_n": "' + item.dD_N + '", "dd_e": "' + item.dD_E + '"}'};  
+                            }))  
+                
+                        }
+                    })  
+                }
+            });
+    });
+    
+</script>
